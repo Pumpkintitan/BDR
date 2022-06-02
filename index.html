@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="./Dragon.js"></script>
+</head>
+
+<body>
+    <script>
+        let d = 0 
+        function setup() {
+            createCanvas(800,800)
+            d = new Dragon(400,400)
+        }
+
+        function draw() {
+            background(200)
+            d.draw()
+            d.move()
+        }
+
+    </script>
+    <div id="status"></div>
+</body>
+
+</html>
