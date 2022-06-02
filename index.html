@@ -3,27 +3,53 @@
 
 <head>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script defer src="https://unpkg.com/p5"></script>
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <script defer src="https://cdn.rawgit.com/bit101/quicksettings/master/quicksettings.js"></script>
+    <script defer src="https://cdn.rawgit.com/bitcraftlab/p5.gui/master/libraries/p5.gui.js"></script>
     <script src="./Dragon.js"></script>
+    <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
 </head>
 
 <body>
     <script>
-        let d = 0 
+        let d = 0
+        var gui;
+        let params = {
+            headScale: 1,
+            headScaleMin: 0.8,
+            headScaleMax: 1.3,
+            headScaleStep: 0.05,
+            wingScale: 1,
+            wingScaleMin: 0.8,
+            wingScaleMax: 1.3,
+            wingScaleStep: 0.05,
+            tailScale: 1,
+            tailScaleMin: 0.8,
+            tailScaleMax: 1.3,
+            tailScaleStep: 0.05,
+            debug: true
+        };
         function setup() {
-            createCanvas(800,800)
-            d = new Dragon(400,400)
+            var gui = createGui('Dragon Stats');
+
+            gui.addObject(params);
+            createCanvas(windowWidth, windowHeight)
+            d = new Dragon(400, 400)
+            console.log(gui)
         }
 
         function draw() {
             background(200)
-            d.draw()
+            d.draw(params.headScale, params.wingScale, params.tailScale, params.debug)
             d.move()
         }
 
+        windowResized = function () {
+            resizeCanvas(windowWidth, windowHeight);
+        };
+
     </script>
-    <div id="status"></div>
 </body>
 
 </html>
