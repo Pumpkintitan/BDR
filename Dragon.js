@@ -2,11 +2,12 @@ class Dragon {
     constructor(x,y) {
         this.pos = createVector(x, y)
         this.vel = 0
-        this.acc = 0
+        this.acc = 0.1
         this.head = 0
     }
-
+    
     draw(sh, sw, st, debug) {
+        push()
         rectMode(CORNERS);
         noStroke()
         translate(this.pos.x, this.pos.y)
@@ -39,9 +40,9 @@ class Dragon {
             quad(-7*st, -25, 7*st, -25, 2, -80*st, -2, -80*st)
 
             // hit box
-            noFill()
-            stroke(0,255,0)
-            rect(-20, -35, 20, 30)
+            // noFill()
+            // stroke(0,255,0)
+            // ellipse(0, 0, 60)
         } else {
             fill('blue')
             rect(-10,-25, 10, 20)
@@ -61,11 +62,21 @@ class Dragon {
             // tail
             quad(-7*st, -25, 7*st, -25, 2, -80*st, -2, -80*st)
         }
+        pop()
     }
 
     move() {
         this.vel += this.acc
-        this.pos.x += Math.sin(this.head) * this.vel
-        this.pos.y += Math.cos(this.head) * this.vel
+        let sa = Math.sin(this.head)
+        let ca = Math.cos(this.head)
+        this.pos.x += sa * this.vel
+        this.pos.y += ca * this.vel
+    }
+
+    checkIntercept(wall) {
+        noFill()
+        stroke(0,255,0)
+        ellipse(this.pos.x, this.pos.y, 60)
+        return collideLineCircle(wall.l1, wall.l2, this.pos, 2000);
     }
 }
