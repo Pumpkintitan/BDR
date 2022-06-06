@@ -9,27 +9,13 @@
     <script defer src="https://cdn.rawgit.com/bitcraftlab/p5.gui/master/libraries/p5.gui.js"></script>
     <script src="./Dragon.js"></script>
     <script src="./Wall.js"></script>
+    <script src="./Ray.js"></script>
     <style> body {padding: 0; margin: 0;} canvas {vertical-align: top;} </style>
 </head>
 
 <body>
     <script>
         let params = {
-            headScale: 1,
-            headScaleMin: 0.8,
-            headScaleMax: 1.3,
-            headScaleStep: 0.05,
-
-            wingScale: 1,
-            wingScaleMin: 0.8,
-            wingScaleMax: 1.3,
-            wingScaleStep: 0.05,
-
-            tailScale: 1,
-            tailScaleMin: 0.8,
-            tailScaleMax: 1.3,
-            tailScaleStep: 0.05,
-
             debug: false
         };
         
@@ -43,29 +29,43 @@
             var gui = createGui('Dragon Stats');
             gui.addObject(params);
 
-            walls[0] = new Wall(100, 1000, 1000, 1000, true)
-            walls[1] = new Wall(100, 1000, 100, 100, true)
-            walls[2] = new Wall(1000, 1000, 1000, 100, true)
-            walls[3] = new Wall(100, 100, 1000, 100, true)
-            dragons[0] = new Dragon(400, 400,Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255)) 
-            dragons[1] = new Dragon(600, 600,Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255)) 
-            dragons[2] = new Dragon(400, 600,Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255)) 
-            dragons[3] = new Dragon(600, 400,Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255)) 
+            walls[0] = new Wall(0, 0, 1000, 0, true)
+            walls[1] = new Wall(0, 0, 0.1, 1000, true)
+            walls[2] = new Wall(1000, 0, 1000, 1000, true)
+            walls[3] = new Wall(0, 1000, 1000, 1000, true)
+            for (let i = 0; i < 50; i++) {
+                dragons[i] = new Dragon(Math.random()*800 + 100, Math.random()*800 + 100,Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255), (Math.random()*Math.PI * 2)- Math.PI) 
+            }
         }
 
         function draw() {
             background(200)
+            rectMode(CORNER)
+            noStroke()
+            fill(175)
+            push()
+            if (windowWidth > 1200) {
+                rect((windowWidth - 1000)/2, 100, 1000,1000)
+                translate((windowWidth - 1000)/2, 100)
+            } else {
+                scale(windowWidth/1200)
+                rect(100, 100, 1000,1000)
+                translate(100, 100)
+            }
             for(let i = 0; i < dragons.length; i++) {
-                dragons[i].draw(params.headScale, params.wingScale, params.tailScale, params.debug)
-                for(let j = 0; j < walls.length; j++) {
-                    dragons[i].checkIntercept(walls[j])
-                    
+                if (!dragons[i].dead) {
+                    dragons[i].action()
+                    dragons[i].move()
+                    for(let j = 0; j < walls.length; j++) {
+                        dragons[i].checkIntercept(walls[j])
+                    }
+                    dragons[i].draw(params.debug, walls)
                 }
-                dragons[i].move()
             }
             for(let i = 0; i < walls.length; i++) {
                 walls[i].draw()
             }
+            pop()
         }
 
         windowResized = function () {
