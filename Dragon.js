@@ -9,12 +9,10 @@ class Dragon {
         this.dead = false
         this.scales = [(Math.random()* 0.8) + 0.7,(Math.random()* 0.8) + 0.7,(Math.random()* 0.8) + 0.7]
         this.rays = []
-        for (let i = 0; i < 9; i++) {
-            let rr = new Ray(-90 + (i * (45/2)))
+        for (let i = 0; i < 32; i++) {
+            let rr = new Ray(-135 + (i * (45/4)))
             this.rays.push(rr)
         }
-        let rr = new Ray(180)
-        this.rays.push(rr)
         this.frame = 0
     }
     
@@ -91,32 +89,106 @@ class Dragon {
         }
     }
 
+    computeRays(walls) {
+        for(let i = 0; i < this.rays.length; i++) {
+            this.rays[i].compute(this.head, this.pos, walls)
+        }
+    }
+
     action() {
-        let c = Math.floor(Math.random()*4)
-        switch(c) {
-            case 0:
-                this.acc += 0.01
-                break;
-            case 1:
-                this.acc -= 0.01
-                break;
-            case 2:
-                this.head += 0.03
-                break;
-            case 3:
-                this.head -= 0.03
-                break;
+        this.computeRays(walls)
+        
+        let L = 0
+        let C = 0
+        let R = 0
+        let B = 0
+
+        for(let i = 0; i < this.rays.length; i++) {
+            if (i < 11) {
+                R += this.rays[i].len
+            } else if (i < 13) {
+                C += this.rays[i].len
+            } else if (i < 24) {
+                L += this.rays[i].len
+            } else {
+                B += this.rays[i].len
+            }
+        }
+
+        L /= 8
+        C /= 8
+        R /= 8
+        B /= 8
+
+        let back = 1060 - C + B
+        let fwd = 1060 - B + C
+        let right = 1060 - L + R
+        let left = 1060 - R + L
+        // let choic = [fwd,back,right,left]
+
+
+        // let prob = fwd + right + back + left
+        // let randd = Math.random() * prob
+        // let runtot = 0
+        // let c = 0
+
+        // for(let i = 0; i < choic.length; i++) {
+        //     runtot += choic[i]
+        //     if (randd < runtot) {
+        //         c = i
+        //         break;
+        //     }
+        // }
+        // console.log(choic, randd, c)
+
+        // switch(c) {
+        //     case 0:
+        //         this.acc += 0.01 * this.scales[0]
+        //         break;
+        //     case 1:
+        //         this.acc -= 0.01 * this.scales[0]
+        //         break;
+        //     case 2:
+        //         this.head -= 0.03 * this.scales[2]
+        //         break;
+        //     case 3:
+        //         this.head += 0.03 * this.scales[2]
+        //         break;
+        // }
+
+        if (right > left) {
+            this.head -= 0.04 * this.scales[2]
+            if (Math.random() < 0.05) {
+                this.head += 0.08 * this.scales[2]
+            }
+        } else {
+            this.head += 0.04 * this.scales[2]
+            if (Math.random() < 0.05) {
+                this.head -= 0.08 * this.scales[2]
+            }
+        }
+
+        if (1.5 * fwd > back) {
+            this.acc += 0.01 * this.scales[0]
+            if (Math.random() < 0.05) {
+                this.acc -= 0.02 * this.scales[0]
+            }
+        } else {
+            this.acc -= 0.01 * this.scales[0]
+            if (Math.random() < 0.05) {
+                this.acc += 0.02 * this.scales[0]
+            }
         }
     }
 
     move() {
         this.vel += this.acc
         this.vel *= 0.95
-        if (this.vel > 5) {
-            this.vel = 5
+        if (this.vel > 4 * this.scales[0]) {
+            this.vel = 4 * this.scales[0]
         }
-        if (this.vel < -1) {
-            this.vel = -1
+        if (this.vel < -1 * this.scales[0]) {
+            this.vel = -1 * this.scales[0]
         }
         let sa = Math.sin(this.head)
         let ca = Math.cos(this.head)

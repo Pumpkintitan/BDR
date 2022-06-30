@@ -5,7 +5,7 @@ class Ray {
     }
 
     draw(dhead, dpos, walls) {
-        this.len = this.compute(dhead, dpos, walls)
+        this.compute(dhead, dpos, walls)
         let b = radians(this.a)
         let sa = Math.sin(dhead + b)
         let ca = Math.cos(dhead + b)
@@ -24,6 +24,7 @@ class Ray {
                 tlen = dist(dpos.x, dpos.y, hit.x, hit.y)
             }
         }
+        this.len = tlen
         return tlen
     }
 }
